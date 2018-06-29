@@ -1,0 +1,22 @@
+language: minimal
+sudo: required
+addons:
+  apt:
+    packages:
+      - docker-ce
+before_install:
+  - docker pull grimkriegor/tes3mp-forge
+  - docker images
+script:
+  - docker run --rm -v /build:/build grimkriegor/tes3mp-forge --commit stable --install --make-package
+  - docker run --rm -v /build:/build grimkriegor/tes3mp-forge --commit stable --rebuild --server-only --make-package
+  - ls /build
+deploy:
+  provider: releases
+  api_key: $GITHUB_TOKEN
+  file_glob: true
+  file: /build/*.tar.gz
+  on:
+    repo: GrimKriegor/TES3MP-guar
+    all_branches: true
+    overwrite: true
