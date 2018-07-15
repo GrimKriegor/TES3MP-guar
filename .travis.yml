@@ -14,6 +14,10 @@ script:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   - docker run --rm -v /build-arm:/build grimkriegor/tes3mp-forge-armhf --commit stable --install --server-only --make-package
   - ls /build
+before_deploy:
+  - git config --local user.name "N'wah"
+  - git config --local user.email "nwah@swit.com"
+  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
