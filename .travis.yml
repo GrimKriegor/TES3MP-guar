@@ -25,6 +25,7 @@ deploy:
   api_key: $GITHUB_TOKEN
   file_glob: true
   file: /build/*.tar.gz
+  name: "$(date +'%Y%m%d%H%M%S')"
   on:
     repo: GrimKriegor/TES3MP-guar
     all_branches: true
