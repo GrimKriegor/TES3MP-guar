@@ -18,6 +18,7 @@ before_deploy:
   - git config --local user.name "N'wah"
   - git config --local user.email "nwah@swit.com"
   - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
+  - mv /build-arm/*.tar.gz /build/
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
