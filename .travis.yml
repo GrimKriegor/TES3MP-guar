@@ -7,18 +7,19 @@ addons:
 before_install:
   - docker pull grimkriegor/tes3mp-forge
   - docker pull grimkriegor/tes3mp-forge-armhf
+  - docker pull multiarch/qemu-user-static:register
   - docker images
 script:
+  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   - docker run --rm -v /build:/build grimkriegor/tes3mp-forge --commit stable --install --make-package
   - docker run --rm -v /build:/build grimkriegor/tes3mp-forge --commit stable --rebuild --server-only --make-package
-  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
   - docker run --rm -v /build-arm:/build grimkriegor/tes3mp-forge-armhf --commit stable --install --server-only --make-package
+  - sudo mv /build-arm/*.tar.gz /build/
   - ls /build
 before_deploy:
   - git config --local user.name "N'wah"
   - git config --local user.email "nwah@swit.com"
   - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
-  - mv /build-arm/*.tar.gz /build/
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
