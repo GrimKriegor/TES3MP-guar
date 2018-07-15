@@ -6,10 +6,13 @@ addons:
       - docker-ce
 before_install:
   - docker pull grimkriegor/tes3mp-forge
+  - docker pull grimkriegor/tes3mp-forge-armhf
   - docker images
 script:
   - docker run --rm -v /build:/build grimkriegor/tes3mp-forge --commit stable --install --make-package
   - docker run --rm -v /build:/build grimkriegor/tes3mp-forge --commit stable --rebuild --server-only --make-package
+  - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+  - docker run --rm -v /build-arm:/build grimkriegor/tes3mp-forge-armhf --commit stable --install --server-only --make-package
   - ls /build
 deploy:
   provider: releases
