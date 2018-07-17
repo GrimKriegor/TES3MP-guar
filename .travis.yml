@@ -16,16 +16,12 @@ script:
   - docker run --rm -v /build-arm:/build grimkriegor/tes3mp-forge-armhf --commit stable --install --server-only --make-package
   - sudo mv /build-arm/*.tar.gz /build/
   - ls /build
-before_deploy:
-  - git config --local user.name "N'wah"
-  - git config --local user.email "nwah@swit.com"
-  - git tag "$(date +'%Y%m%d%H%M%S')-$(git log --format=%h -1)"
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   file_glob: true
   file: /build/*.tar.gz
-  name: "$(date +'%Y%m%d%H%M%S')"
+  name: "$(date +'%Y-%m-%d %H:%M')"
   on:
     repo: GrimKriegor/TES3MP-guar
     all_branches: true
