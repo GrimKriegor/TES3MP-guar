@@ -4,23 +4,27 @@ addons:
   apt:
     packages:
       - docker-ce
-before_install:
+install:
   - docker pull grimkriegor/tes3mp-forge
   - docker pull grimkriegor/tes3mp-forge-armhf
   - docker pull multiarch/qemu-user-static:register
   - docker images
-script:
+before_script:
   - docker run --rm --privileged multiarch/qemu-user-static:register --reset
+script:
   - docker run --rm -v /build:/build grimkriegor/tes3mp-forge --commit stable --install --make-package
   - docker run --rm -v /build:/build grimkriegor/tes3mp-forge --commit stable --rebuild --server-only --make-package
   - docker run --rm -v /build-arm:/build grimkriegor/tes3mp-forge-armhf --commit stable --install --server-only --make-package
-  - sudo mv /build-arm/*.tar.gz /build/
-  - ls /build
+before_deploy:
+  - sudo mkdir /release
+  - sudo mv /build/*.tar.gz /release/
+  - sudo mv /build-arm/*.tar.gz /release/
+  - ls /release
 deploy:
   provider: releases
   api_key: $GITHUB_TOKEN
   file_glob: true
-  file: /build*/*.tar.gz
+  file: /release/*.tar.gz
   name: "$(date +'%Y-%m-%d %H:%M')"
   on:
     repo: GrimKriegor/TES3MP-guar
